@@ -1,0 +1,39 @@
+1.使用注解实现事务（声明式事务）
+目标：通过事务 使以下方法 要么全成功、要么全失败
+
+a. jar包
+spring-tx-4.3.9.RELEASE
+ojdbc.jar
+commons-dbcp.jar  连接池使用到数据源
+commons-pool.jar  连接池
+spring-jdbc-4.3.9.RELEASE.jar
+aopalliance.jar 
+
+b.配置
+jdbc\mybatis\spring
+增加事务tx的命名空间
+<!-- 配置数据库相关  -->
+	<bean id="dataSource"  class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver"></property>
+		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:ORCL"></property>
+		<property name="username" value="scott"></property>
+		<property name="password" value="tiger"></property>
+		<property name="maxActive" value="10"></property>
+		<property name="maxIdle" value="6"></property>
+	</bean>
+	
+	<!-- 配置事务管理器txManager -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource"  ref="dataSource"></property>
+	</bean>
+	
+	<!-- 增加对事务的支持，其他都是为了配置这个而添加的 -->
+	<tx:annotation-driven transaction-manager="txManager"  />
+
+
+c.使用
+
+将需要 成为事务的方法 前增加注解：
+@Transactional(readOnly=false,propagation=Propagation.REQUIRED)
+
+具体属性查看文档
